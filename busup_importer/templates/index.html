@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapeador de Importação BusUp</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
+        h1 { font-size: 22px; color: #333; margin-bottom: 10px; }
+        p { color: #666; font-size: 14px; line-height: 1.5; }
+        .status { padding: 10px; border-radius: 4px; font-weight: bold; margin-bottom: 15px; font-size: 13px; }
+        .ok { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        input[type="file"] { margin: 15px 0; display: block; }
+        button { background: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>📊 Mapeador BusUp (Simplificado)</h1>
+        <p>Envie apenas a planilha com os dados brutos dos passageiros. O sistema aplicará o template e as rotas automaticamente.</p>
+        
+        {% if base_existe %}
+            <div class="status ok">✓ Base de Route Stops carregada no servidor.</div>
+        {% else %}
+            <div class="status error">⚠️ Atenção: Nenhuma base de rotas encontrada em /bases.</div>
+        {% endif %}
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="status error">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="/processar" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".xlsx, .xls" required>
+            <button type="submit">Gerar Planilha Final</button>
+        </form>
+    </div>
+</body>
+</html>
